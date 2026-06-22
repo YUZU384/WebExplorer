@@ -1,0 +1,607 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WebExplorer - 局域网文件传输工具</title>
+    <meta name="description" content="电脑端运行服务，手机浏览器即可访问、浏览、上传和下载文件，无需安装任何 APP。">
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- 粒子背景画布 -->
+    <canvas id="particleCanvas"></canvas>
+
+    <!-- 导航栏 -->
+    <nav class="navbar" id="navbar">
+        <div class="nav-container">
+            <div class="nav-brand">
+                <div class="nav-logo">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z"/>
+                    </svg>
+                </div>
+                <span class="nav-title">WebExplorer</span>
+            </div>
+            <div class="nav-links">
+                <a href="#features" class="nav-link">功能特性</a>
+                <a href="#preview" class="nav-link">界面预览</a>
+                <a href="#tech" class="nav-link">技术栈</a>
+                <a href="#api" class="nav-link">API</a>
+                <a href="#start" class="nav-link">快速开始</a>
+            </div>
+            <a href="#start" class="btn btn-primary nav-cta">
+                <span>立即使用</span>
+            </a>
+            <button class="nav-menu-btn" id="navMenuBtn" aria-label="菜单">
+                <span></span>
+            </button>
+        </div>
+        <!-- 移动端菜单 -->
+        <div class="nav-mobile" id="navMobile">
+            <a href="#features" class="nav-mobile-link">功能特性</a>
+            <a href="#preview" class="nav-mobile-link">界面预览</a>
+            <a href="#tech" class="nav-mobile-link">技术栈</a>
+            <a href="#api" class="nav-mobile-link">API</a>
+            <a href="#start" class="nav-mobile-link">快速开始</a>
+        </div>
+    </nav>
+
+    <!-- 英雄区域 -->
+    <section class="hero">
+        <div class="hero-bg"></div>
+        <div class="hero-content">
+            <div class="hero-badge">
+                <span class="badge-dot"></span>
+                <span>无需安装 APP · 浏览器即用</span>
+            </div>
+            <h1 class="hero-title">
+                <span class="gradient-text">局域网文件传输</span>
+                <br>从未如此简单
+            </h1>
+            <p class="hero-description">
+                电脑端运行服务，手机浏览器扫码即可访问。<br>
+                仿 Windows 11 资源管理器界面，浏览、上传、下载文件一气呵成。
+            </p>
+            <div class="hero-buttons">
+                <a href="#start" class="btn btn-primary btn-large">
+                    <svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M5 12h14M12 5l7 7-7 7"/>
+                    </svg>
+                    <span>快速开始</span>
+                </a>
+                <a href="#preview" class="btn btn-secondary btn-large">
+                    <svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <rect x="2" y="3" width="20" height="14" rx="2"/>
+                        <line x1="8" y1="21" x2="16" y2="21"/>
+                        <line x1="12" y1="17" x2="12" y2="21"/>
+                    </svg>
+                    <span>查看预览</span>
+                </a>
+            </div>
+            <div class="hero-stats">
+                <div class="stat-item">
+                    <span class="stat-value">.NET 10</span>
+                    <span class="stat-label">后端框架</span>
+                </div>
+                <div class="stat-divider"></div>
+                <div class="stat-item">
+                    <span class="stat-value">Win11</span>
+                    <span class="stat-label">界面风格</span>
+                </div>
+                <div class="stat-divider"></div>
+                <div class="stat-item">
+                    <span class="stat-value">0 限制</span>
+                    <span class="stat-label">文件大小</span>
+                </div>
+            </div>
+        </div>
+        <!-- Win11 资源管理器 CSS 模型 -->
+        <div class="hero-mockup">
+            <div class="mockup-glow"></div>
+            <div class="explorer-window">
+                <div class="explorer-titlebar">
+                    <div class="titlebar-left">
+                        <div class="titlebar-icon">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z"/>
+                            </svg>
+                        </div>
+                        <span>此电脑</span>
+                    </div>
+                    <div class="titlebar-controls">
+                        <span class="ctrl-min"></span>
+                        <span class="ctrl-max"></span>
+                        <span class="ctrl-close"></span>
+                    </div>
+                </div>
+                <div class="explorer-toolbar">
+                    <div class="toolbar-nav-btns">
+                        <span class="tb-btn disabled">‹</span>
+                        <span class="tb-btn">›</span>
+                        <span class="tb-btn">↑</span>
+                        <span class="tb-btn">⟳</span>
+                    </div>
+                    <div class="toolbar-address">
+                        <span class="addr-crumb">此电脑</span>
+                        <span class="addr-sep">›</span>
+                        <span class="addr-crumb active">桌面</span>
+                    </div>
+                    <div class="toolbar-search">
+                        <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+                        <span>搜索</span>
+                    </div>
+                </div>
+                <div class="explorer-actionbar">
+                    <span class="action-chip">＋ 新建</span>
+                    <span class="action-chip">↑ 上传</span>
+                </div>
+                <div class="explorer-body">
+                    <div class="explorer-sidebar">
+                        <div class="sb-section">快速访问</div>
+                        <div class="sb-item active">
+                            <span class="sb-icon">🖥️</span> 桌面
+                        </div>
+                        <div class="sb-item">
+                            <span class="sb-icon">📄</span> 文档
+                        </div>
+                        <div class="sb-item">
+                            <span class="sb-icon">⬇️</span> 下载
+                        </div>
+                        <div class="sb-item">
+                            <span class="sb-icon">🖼️</span> 图片
+                        </div>
+                        <div class="sb-section">此电脑</div>
+                        <div class="sb-item">
+                            <span class="sb-icon">💽</span> 本地磁盘 (C:)
+                        </div>
+                        <div class="sb-item">
+                            <span class="sb-icon">💽</span> 数据 (D:)
+                        </div>
+                    </div>
+                    <div class="explorer-files">
+                        <div class="file-tile folder">
+                            <div class="file-icon">📁</div>
+                            <div class="file-name">项目文件</div>
+                        </div>
+                        <div class="file-tile folder">
+                            <div class="file-icon">📁</div>
+                            <div class="file-name">截图备份</div>
+                        </div>
+                        <div class="file-tile">
+                            <div class="file-icon img">🖼️</div>
+                            <div class="file-name">封面.png</div>
+                        </div>
+                        <div class="file-tile">
+                            <div class="file-icon doc">📄</div>
+                            <div class="file-name">说明.txt</div>
+                        </div>
+                        <div class="file-tile">
+                            <div class="file-icon vid">🎬</div>
+                            <div class="file-name">演示.mp4</div>
+                        </div>
+                        <div class="file-tile folder">
+                            <div class="file-icon">📁</div>
+                            <div class="file-name">工作文档</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="explorer-statusbar">
+                    <span>6 个项目</span>
+                    <span class="sb-status-path">此电脑 › 桌面</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 工作流程 -->
+    <section class="workflow">
+        <div class="container">
+            <div class="section-header">
+                <span class="section-badge">⚡ 工作流程</span>
+                <h2 class="section-title">三步开始传输</h2>
+                <p class="section-description">无需数据线，无需安装客户端，扫码即用</p>
+            </div>
+            <div class="workflow-steps">
+                <div class="step-card">
+                    <div class="step-number">01</div>
+                    <div class="step-icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M5 12h14M12 5l7 7-7 7"/>
+                        </svg>
+                    </div>
+                    <h3 class="step-title">启动服务</h3>
+                    <p class="step-desc">在电脑端运行程序，点击「启动服务」按钮，程序自动获取本机 IP 并开启 HTTP 服务。</p>
+                </div>
+                <div class="step-connector"></div>
+                <div class="step-card">
+                    <div class="step-number">02</div>
+                    <div class="step-icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <rect x="3" y="3" width="7" height="7"/>
+                            <rect x="14" y="3" width="7" height="7"/>
+                            <rect x="3" y="14" width="7" height="7"/>
+                            <rect x="14" y="14" width="7" height="7"/>
+                        </svg>
+                    </div>
+                    <h3 class="step-title">扫码访问</h3>
+                    <p class="step-desc">手机扫描程序生成的二维码，或在浏览器输入显示的访问地址，即可打开文件管理器。</p>
+                </div>
+                <div class="step-connector"></div>
+                <div class="step-card">
+                    <div class="step-number">03</div>
+                    <div class="step-icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/>
+                            <polyline points="7 10 12 15 17 10"/>
+                            <line x1="12" y1="15" x2="12" y2="3"/>
+                        </svg>
+                    </div>
+                    <h3 class="step-title">传输文件</h3>
+                    <p class="step-desc">在手机端浏览目录、下载文件到本地、上传手机文件到电脑，流式传输无大小限制。</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 功能特性 -->
+    <section class="features" id="features">
+        <div class="container">
+            <div class="section-header">
+                <span class="section-badge">✨ 功能特性</span>
+                <h2 class="section-title">为效率而生</h2>
+                <p class="section-description">精心设计的每一项功能，让局域网文件传输变得优雅高效</p>
+            </div>
+            <div class="features-grid">
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <rect x="2" y="3" width="20" height="14" rx="2"/>
+                            <line x1="8" y1="21" x2="16" y2="21"/>
+                            <line x1="12" y1="17" x2="12" y2="21"/>
+                        </svg>
+                    </div>
+                    <h3 class="feature-title">仿 Win11 界面</h3>
+                    <p class="feature-description">侧边栏导航 + 面包屑 + 工具栏，响应式设计完美适配手机、平板与桌面浏览器。</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/>
+                            <polyline points="7 10 12 15 17 10"/>
+                            <line x1="12" y1="15" x2="12" y2="3"/>
+                        </svg>
+                    </div>
+                    <h3 class="feature-title">文件管理</h3>
+                    <p class="feature-description">浏览目录、下载文件、上传文件、新建文件夹、删除文件/文件夹，功能完整。</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <rect x="3" y="3" width="7" height="7"/>
+                            <rect x="14" y="3" width="7" height="7"/>
+                            <rect x="3" y="14" width="7" height="7"/>
+                            <rect x="14" y="14" width="7" height="7"/>
+                        </svg>
+                    </div>
+                    <h3 class="feature-title">二维码扫码</h3>
+                    <p class="feature-description">自动生成访问地址二维码，手机扫码即用，无需手动输入冗长的 IP 地址。</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <rect x="2" y="4" width="20" height="16" rx="2"/>
+                            <path d="M6 8h.01M6 12h.01M6 16h.01"/>
+                            <path d="M10 8h8M10 12h8M10 16h5"/>
+                        </svg>
+                    </div>
+                    <h3 class="feature-title">快速访问</h3>
+                    <p class="feature-description">桌面、文档、下载、图片等常用目录一键直达，自动列出所有磁盘驱动器。</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <circle cx="12" cy="12" r="10"/>
+                            <polyline points="12 6 12 12 16 14"/>
+                        </svg>
+                    </div>
+                    <h3 class="feature-title">系统托盘</h3>
+                    <p class="feature-description">最小化到托盘后台运行，右键菜单快速退出或重启服务，不打扰日常工作。</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/>
+                        </svg>
+                    </div>
+                    <h3 class="feature-title">配置热更新</h3>
+                    <p class="feature-description">修改端口、IP 等配置后自动生效，支持开机自启动，省去重复设置的烦恼。</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+                        </svg>
+                    </div>
+                    <h3 class="feature-title">路径安全防护</h3>
+                    <p class="feature-description">路径规范化 + 穿越段检查，防止目录遍历攻击，保障文件系统安全。</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/>
+                            <polyline points="14 2 14 8 20 8"/>
+                            <line x1="12" y1="18" x2="12" y2="12"/>
+                            <polyline points="9 15 12 12 15 15"/>
+                        </svg>
+                    </div>
+                    <h3 class="feature-title">大文件支持</h3>
+                    <p class="feature-description">流式上传与下载，无文件大小限制，传输大体积视频、压缩包同样流畅。</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 界面预览 -->
+    <section class="preview" id="preview">
+        <div class="container">
+            <div class="section-header">
+                <span class="section-badge">🔍 界面预览</span>
+                <h2 class="section-title">熟悉的操作体验</h2>
+                <p class="section-description">高度还原 Windows 11 资源管理器，零学习成本上手即用</p>
+            </div>
+            <div class="preview-showcase">
+                <div class="preview-card preview-main">
+                    <div class="preview-image-wrapper">
+                        <div class="preview-mockup-mini">
+                            <div class="mini-window">
+                                <div class="mini-titlebar">
+                                    <span>此电脑 › 桌面</span>
+                                    <div class="mini-controls"><span></span><span></span><span></span></div>
+                                </div>
+                                <div class="mini-body">
+                                    <div class="mini-sidebar">
+                                        <div class="mini-sb-item active">🖥️ 桌面</div>
+                                        <div class="mini-sb-item">📄 文档</div>
+                                        <div class="mini-sb-item">⬇️ 下载</div>
+                                        <div class="mini-sb-item">🖼️ 图片</div>
+                                    </div>
+                                    <div class="mini-files">
+                                        <div class="mini-file">📁</div>
+                                        <div class="mini-file">📁</div>
+                                        <div class="mini-file">🖼️</div>
+                                        <div class="mini-file">📄</div>
+                                        <div class="mini-file">📁</div>
+                                        <div class="mini-file">🎬</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="preview-info">
+                        <h3>文件管理器主界面</h3>
+                        <p>侧边栏 + 面包屑 + 工具栏的经典布局，图标视图与列表视图自由切换</p>
+                    </div>
+                </div>
+                <div class="preview-card preview-side">
+                    <div class="preview-image-wrapper">
+                        <div class="qr-mockup">
+                            <div class="qr-grid">
+                                <span></span><span></span><span></span><span></span><span></span><span></span><span></span>
+                                <span></span><span class="on"></span><span></span><span class="on"></span><span></span><span class="on"></span><span></span>
+                                <span></span><span class="on"></span><span class="on"></span><span></span><span class="on"></span><span></span><span></span>
+                                <span></span><span></span><span class="on"></span><span class="on"></span><span></span><span class="on"></span><span></span>
+                                <span></span><span class="on"></span><span></span><span class="on"></span><span class="on"></span><span></span><span></span>
+                                <span></span><span></span><span class="on"></span><span></span><span class="on"></span><span class="on"></span><span></span>
+                                <span></span><span class="on"></span><span></span><span class="on"></span><span></span><span></span><span></span>
+                            </div>
+                            <div class="qr-label">http://192.168.1.100:8080</div>
+                        </div>
+                    </div>
+                    <div class="preview-info">
+                        <h3>二维码扫码访问</h3>
+                        <p>服务端生成访问地址二维码，手机扫码即可打开，告别手动输入</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 技术栈 -->
+    <section class="tech" id="tech">
+        <div class="container">
+            <div class="section-header">
+                <span class="section-badge">🛠️ 技术栈</span>
+                <h2 class="section-title">现代技术架构</h2>
+                <p class="section-description">基于 .NET 10 与 ASP.NET Core 构建的高性能文件服务</p>
+            </div>
+            <div class="tech-grid">
+                <div class="tech-card">
+                    <div class="tech-icon">⚡</div>
+                    <h3>.NET 10</h3>
+                    <p>后端框架</p>
+                    <span class="tech-tag">net10.0-windows</span>
+                </div>
+                <div class="tech-card">
+                    <div class="tech-icon">🌐</div>
+                    <h3>ASP.NET Core</h3>
+                    <p>HTTP 服务器</p>
+                    <span class="tech-tag">Kestrel</span>
+                </div>
+                <div class="tech-card">
+                    <div class="tech-icon">🖥️</div>
+                    <h3>WinForms</h3>
+                    <p>服务端 UI</p>
+                    <span class="tech-tag">控制台 + 托盘</span>
+                </div>
+                <div class="tech-card">
+                    <div class="tech-icon">📄</div>
+                    <h3>HTML5 + CSS3</h3>
+                    <p>前端界面</p>
+                    <span class="tech-tag">Vanilla JS</span>
+                </div>
+                <div class="tech-card">
+                    <div class="tech-icon">🔳</div>
+                    <h3>QRCoder</h3>
+                    <p>二维码生成</p>
+                    <span class="tech-tag">扫码访问</span>
+                </div>
+                <div class="tech-card">
+                    <div class="tech-icon">📦</div>
+                    <h3>EmbeddedResource</h3>
+                    <p>静态资源打包</p>
+                    <span class="tech-tag">单文件部署</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- API 接口 -->
+    <section class="api" id="api">
+        <div class="container">
+            <div class="section-header">
+                <span class="section-badge">🔌 API 接口</span>
+                <h2 class="section-title">RESTful 接口</h2>
+                <p class="section-description">简洁清晰的 HTTP API，方便二次开发与集成</p>
+            </div>
+            <div class="api-table">
+                <div class="api-header">
+                    <div class="api-col api-col-route">路由</div>
+                    <div class="api-col api-col-method">方法</div>
+                    <div class="api-col api-col-desc">用途</div>
+                </div>
+                <div class="api-row">
+                    <div class="api-col api-col-route"><code>/api/files?path=</code></div>
+                    <div class="api-col api-col-method"><span class="method-get">GET</span></div>
+                    <div class="api-col api-col-desc">获取目录内容</div>
+                </div>
+                <div class="api-row">
+                    <div class="api-col api-col-route"><code>/api/download?path=</code></div>
+                    <div class="api-col api-col-method"><span class="method-get">GET</span></div>
+                    <div class="api-col api-col-desc">下载文件</div>
+                </div>
+                <div class="api-row">
+                    <div class="api-col api-col-route"><code>/api/upload</code></div>
+                    <div class="api-col api-col-method"><span class="method-post">POST</span></div>
+                    <div class="api-col api-col-desc">上传文件（FormData）</div>
+                </div>
+                <div class="api-row">
+                    <div class="api-col api-col-route"><code>/api/delete</code></div>
+                    <div class="api-col api-col-method"><span class="method-delete">DELETE</span></div>
+                    <div class="api-col api-col-desc">删除文件/文件夹</div>
+                </div>
+                <div class="api-row">
+                    <div class="api-col api-col-route"><code>/api/newfolder</code></div>
+                    <div class="api-col api-col-method"><span class="method-post">POST</span></div>
+                    <div class="api-col api-col-desc">创建新文件夹</div>
+                </div>
+                <div class="api-row">
+                    <div class="api-col api-col-route"><code>/api/drives</code></div>
+                    <div class="api-col api-col-method"><span class="method-get">GET</span></div>
+                    <div class="api-col api-col-desc">获取驱动器列表</div>
+                </div>
+                <div class="api-row">
+                    <div class="api-col api-col-route"><code>/api/quickaccess</code></div>
+                    <div class="api-col api-col-method"><span class="method-get">GET</span></div>
+                    <div class="api-col api-col-desc">获取快速访问路径</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 快速开始 -->
+    <section class="start" id="start">
+        <div class="container">
+            <div class="start-card">
+                <div class="start-content">
+                    <span class="section-badge">🚀 快速开始</span>
+                    <h2 class="start-title">几行命令，即刻运行</h2>
+                    <p class="start-desc">确保已安装 .NET 10 SDK 与 Windows 系统，克隆仓库后即可构建运行</p>
+                    <div class="code-block">
+                        <div class="code-header">
+                            <span class="code-dots"><i></i><i></i><i></i></span>
+                            <span class="code-title">PowerShell</span>
+                            <button class="code-copy" id="codeCopy">复制</button>
+                        </div>
+                        <pre><code><span class="c-comment"># 克隆并进入项目</span>
+<span class="c-fn">cd</span> WebExplorer
+
+<span class="c-comment"># 构建项目</span>
+<span class="c-cmd">dotnet</span> build
+
+<span class="c-comment"># 运行服务</span>
+<span class="c-cmd">dotnet</span> run --project WebExplorer</code></pre>
+                    </div>
+                    <div class="start-steps">
+                        <div class="start-step">
+                            <span class="step-num">1</span>
+                            <span>启动程序，主窗口显示本机 IP 和端口</span>
+                        </div>
+                        <div class="start-step">
+                            <span class="step-num">2</span>
+                            <span>点击「启动服务」按钮</span>
+                        </div>
+                        <div class="start-step">
+                            <span class="step-num">3</span>
+                            <span>手机扫码或浏览器访问显示的地址</span>
+                        </div>
+                        <div class="start-step">
+                            <span class="step-num">4</span>
+                            <span>在手机端浏览、上传、下载文件</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="start-decoration">
+                    <div class="deco-circle"></div>
+                    <div class="deco-circle"></div>
+                    <div class="deco-circle"></div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 页脚 -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-brand">
+                    <div class="footer-logo">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z"/>
+                        </svg>
+                    </div>
+                    <span class="footer-title">WebExplorer</span>
+                    <p class="footer-desc">局域网文件传输工具 —— 电脑端运行服务，手机浏览器即可访问、浏览、上传和下载文件，无需安装任何 APP。</p>
+                </div>
+                <div class="footer-links">
+                    <div class="footer-links-group">
+                        <h4>导航</h4>
+                        <a href="#features">功能特性</a>
+                        <a href="#preview">界面预览</a>
+                        <a href="#tech">技术栈</a>
+                        <a href="#api">API 接口</a>
+                    </div>
+                    <div class="footer-links-group">
+                        <h4>文档</h4>
+                        <a href="../README.md">README</a>
+                        <a href="../documents/prd.md">产品需求文档</a>
+                        <a href="../documents/tech-architecture.md">技术架构文档</a>
+                    </div>
+                    <div class="footer-links-group">
+                        <h4>资源</h4>
+                        <a href="https://dotnet.microsoft.com/" target="_blank">.NET SDK</a>
+                        <a href="https://learn.microsoft.com/aspnet/core" target="_blank">ASP.NET Core</a>
+                        <a href="../LICENSE.txt">MIT 许可证</a>
+                    </div>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>WebExplorer · 基于 .NET 10 与 ASP.NET Core 构建</p>
+                <p>采用 MIT 开源许可证 · Made with ❤️</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>
