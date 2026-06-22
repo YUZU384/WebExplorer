@@ -1,0 +1,21 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net10.0-windows</TargetFramework>
+    <Nullable>enable</Nullable>
+    <UseWindowsForms>true</UseWindowsForms>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <DisableConsoleAllocation>true</DisableConsoleAllocation>
+  </PropertyGroup>
+
+  <!-- 嵌入前端静态资源（wwwroot 在项目上级目录） -->
+  <ItemGroup>
+    <EmbeddedResource Include="..\wwwroot\**\*" LinkBase="wwwroot" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="QRCoder" Version="1.8.0" />
+  </ItemGroup>
+
+</Project>
