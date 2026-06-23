@@ -2,6 +2,22 @@
 
 局域网文件传输工具 —— 电脑端运行服务，手机浏览器即可访问、浏览、上传和下载文件，无需安装任何 APP。
 
+## 截图预览
+
+### 手机端
+
+<p align="center">
+  <img src="pic/phone1.jpg" width="220" />
+  <img src="pic/phone2.jpg" width="220" />
+  <img src="pic/phone3.jpg" width="220" />
+</p>
+
+### 电脑端
+
+<p align="center">
+  <img src="pic/windows.jpeg" width="500" />
+</p>
+
 ## 功能特性
 
 - **仿 Windows 11 资源管理器界面**：侧边栏导航 + 面包屑 + 工具栏，响应式设计适配手机/平板/桌面
@@ -16,14 +32,14 @@
 
 ## 技术栈
 
-| 层 | 技术 |
-|----|------|
-| 后端框架 | .NET 10.0 (net10.0-windows) + ASP.NET Core |
-| UI 框架 | WinForms（服务端控制台与设置窗体） |
-| HTTP 服务器 | Kestrel（ASP.NET Core 内置） |
-| 前端 | 纯 HTML5 + CSS3 + Vanilla JavaScript（无构建工具） |
-| 二维码 | QRCoder |
-| 静态资源 | EmbeddedResource 嵌入打包 |
+| 层        | 技术                                         |
+| -------- | ------------------------------------------ |
+| 后端框架     | .NET 10.0 (net10.0-windows) + ASP.NET Core |
+| UI 框架    | WinForms（服务端控制台与设置窗体）                      |
+| HTTP 服务器 | Kestrel（ASP.NET Core 内置）                   |
+| 前端       | 纯 HTML5 + CSS3 + Vanilla JavaScript（无构建工具） |
+| 二维码      | QRCoder                                    |
+| 静态资源     | EmbeddedResource 嵌入打包                      |
 
 ## 快速开始
 
@@ -80,15 +96,15 @@ WebExplorer/
 
 ## API 接口
 
-| 路由 | 方法 | 用途 |
-|------|------|------|
-| `/api/files?path=` | GET | 获取目录内容 |
-| `/api/download?path=` | GET | 下载文件 |
-| `/api/upload` | POST | 上传文件（FormData） |
-| `/api/delete` | DELETE | 删除文件/文件夹 |
-| `/api/newfolder` | POST | 创建新文件夹 |
-| `/api/drives` | GET | 获取驱动器列表 |
-| `/api/quickaccess` | GET | 获取快速访问路径 |
+| 路由                    | 方法     | 用途             |
+| --------------------- | ------ | -------------- |
+| `/api/files?path=`    | GET    | 获取目录内容         |
+| `/api/download?path=` | GET    | 下载文件           |
+| `/api/upload`         | POST   | 上传文件（FormData） |
+| `/api/delete`         | DELETE | 删除文件/文件夹       |
+| `/api/newfolder`      | POST   | 创建新文件夹         |
+| `/api/drives`         | GET    | 获取驱动器列表        |
+| `/api/quickaccess`    | GET    | 获取快速访问路径       |
 
 ## 文档
 
