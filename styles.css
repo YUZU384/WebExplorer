@@ -903,15 +903,15 @@ section {
 }
 
 /* ============================================
-   界面预览
+   界面预览 - 图片画廊
    ============================================ */
-.preview-showcase {
-    display: flex;
-    gap: 24px;
-    align-items: stretch;
+.preview-gallery {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
 }
 
-.preview-card {
+.preview-item {
     background: var(--bg-card);
     border-radius: var(--radius-xl);
     overflow: hidden;
@@ -920,178 +920,35 @@ section {
     transition: var(--transition-normal);
 }
 
-.preview-card:hover {
+.preview-item:hover {
     box-shadow: var(--shadow-lg);
-    transform: translateY(-4px);
+    transform: translateY(-3px);
 }
 
-.preview-main {
-    flex: 1.4;
+.preview-item-main {
+    grid-column: span 3;
 }
 
-.preview-side {
-    flex: 1;
-}
-
-.preview-image-wrapper {
-    position: relative;
-    overflow: hidden;
-    background: linear-gradient(135deg, #EAF4FC 0%, #F0F6FA 100%);
-    aspect-ratio: 16/10;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 20px;
-}
-
-.preview-main .preview-image-wrapper {
-    aspect-ratio: 16/11;
-}
-
-/* 迷你资源管理器模型 */
-.preview-mockup-mini {
+.preview-item img {
     width: 100%;
-    max-width: 440px;
+    height: auto;
+    display: block;
 }
 
-.mini-window {
-    background: white;
-    border-radius: var(--radius-md);
-    box-shadow: var(--shadow-lg);
-    overflow: hidden;
-    border: 1px solid var(--border-color);
-}
-
-.mini-titlebar {
+.preview-caption {
     display: flex;
     align-items: center;
-    justify-content: space-between;
-    padding: 7px 10px;
-    background: #EDEDED;
-    border-bottom: 1px solid var(--border-light);
-    font-size: 11px;
+    gap: 8px;
+    padding: 10px 14px;
+    font-size: 13px;
     font-weight: 500;
     color: var(--text-secondary);
+    background: var(--bg-primary);
+    border-top: 1px solid var(--border-light);
 }
 
-.mini-controls {
-    display: flex;
-    gap: 5px;
-}
-
-.mini-controls span {
-    width: 9px;
-    height: 9px;
-    border-radius: 50%;
-    background: #ddd;
-}
-
-.mini-controls span:nth-child(1) { background: #FFBD2E; }
-.mini-controls span:nth-child(2) { background: #28C840; }
-.mini-controls span:nth-child(3) { background: #FF5F57; }
-
-.mini-body {
-    display: flex;
-    min-height: 170px;
-}
-
-.mini-sidebar {
-    width: 90px;
-    background: #FAFAFA;
-    border-right: 1px solid var(--border-light);
-    padding: 6px 5px;
-}
-
-.mini-sb-item {
-    padding: 5px 7px;
-    border-radius: var(--radius-sm);
-    font-size: 10px;
-    color: var(--text-secondary);
-    margin-bottom: 2px;
-}
-
-.mini-sb-item.active {
-    background: rgba(0, 120, 212, 0.1);
-    color: var(--we-blue-dark);
-    font-weight: 600;
-}
-
-.mini-files {
-    flex: 1;
-    padding: 10px;
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 6px;
-    align-content: start;
-}
-
-.mini-file {
-    font-size: 22px;
-    text-align: center;
-    padding: 6px 3px;
-    border-radius: var(--radius-sm);
-    transition: var(--transition-fast);
-}
-
-.mini-file:hover {
-    background: rgba(0, 120, 212, 0.06);
-}
-
-/* 二维码模型 */
-.qr-mockup {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 14px;
-}
-
-.qr-grid {
-    display: grid;
-    grid-template-columns: repeat(7, 1fr);
-    gap: 3px;
-    padding: 16px;
-    background: white;
-    border-radius: var(--radius-lg);
-    box-shadow: var(--shadow-md);
-    border: 1px solid var(--border-color);
-}
-
-.qr-grid span {
-    width: 15px;
-    height: 15px;
-    border-radius: 3px;
-    background: transparent;
-}
-
-.qr-grid span.on {
-    background: var(--text-primary);
-}
-
-.qr-label {
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 12px;
-    color: var(--text-secondary);
-    background: var(--bg-card);
-    padding: 5px 12px;
-    border-radius: 100px;
-    border: 1px solid var(--border-color);
-}
-
-.preview-info {
-    padding: 18px;
-}
-
-.preview-info h3 {
+.preview-icon {
     font-size: 16px;
-    font-weight: 600;
-    margin-bottom: 6px;
-    color: var(--text-primary);
-}
-
-.preview-info p {
-    font-size: 13px;
-    color: var(--text-secondary);
-    line-height: 1.7;
 }
 
 /* ============================================
@@ -1600,8 +1457,12 @@ section {
         display: flex;
     }
 
-    .preview-showcase {
-        flex-direction: column;
+    .preview-gallery {
+        grid-template-columns: 1fr;
+    }
+
+    .preview-item-main {
+        grid-column: span 1;
     }
 
     .workflow-steps {
