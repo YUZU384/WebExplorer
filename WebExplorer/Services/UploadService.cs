@@ -54,7 +54,7 @@ namespace WebExplorer.Services
 
                 _logger.Info($"开始上传: {fileName} ({FormatFileSize(file.Length)}) 到 {safeTargetPath}");
 
-                using (var stream = new FileStream(filePath, FileMode.Create, FileAccess.Write, FileShare.None, 4096, FileOptions.Asynchronous | FileOptions.WriteThrough))
+                using (var stream = new FileStream(filePath, FileMode.Create, FileAccess.Write, FileShare.None, 65536, FileOptions.Asynchronous))
                 {
                     await file.CopyToAsync(stream, cancellationToken);
                 }

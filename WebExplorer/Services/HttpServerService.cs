@@ -72,6 +72,10 @@ namespace WebExplorer.Services
         private static void ConfigureServices(WebApplicationBuilder builder, int port, LogService logger)
         {
             builder.Services.AddControllers();
+            builder.Services.AddResponseCompression(options =>
+            {
+                options.EnableForHttps = true;
+            });
             builder.Services.AddSingleton(logger);
             builder.Services.AddSingleton<FileService>();
             builder.Services.AddSingleton<UploadService>();
@@ -79,10 +83,17 @@ namespace WebExplorer.Services
 
             builder.WebHost.ConfigureKestrel(options =>
             {
-                options.Listen(IPAddress.Any, port);
-                options.Limits.MaxRequestBodySize = long.MaxValue; // 允许大文件上传
+                options.Listen(IPAddress.Any, port, listenOptions =>
+                {
+                    listenOptions.Protocols = Microsoft.AspNetCore.Server.Kestrel.Core.HttpProtocols.Http1AndHttp2;
+                });
+                options.Limits.MaxRequestBodySize = long.MaxValue;
                 options.Limits.KeepAliveTimeout = TimeSpan.FromMinutes(10);
                 options.Limits.RequestHeadersTimeout = TimeSpan.FromMinutes(2);
+                options.Limits.MaxConcurrentConnections = 100;
+                options.Limits.MaxConcurrentUpgradedConnections = 100;
+                options.Limits.MinRequestBodyDataRate = null;
+                options.Limits.MinResponseDataRate = null;
             });
 
             builder.Services.AddCors(options =>
@@ -97,10 +108,11 @@ namespace WebExplorer.Services
         }
 
         /// <summary>
-        /// 配置中间件管道：CORS → 日志 → 静态文件 → API 路由 → SPA fallback
+        /// 配置中间件管道：响应压缩 → CORS → 日志 → 静态文件 → API 路由 → SPA fallback
         /// </summary>
         private void ConfigurePipeline(WebApplication app)
         {
+            app.UseResponseCompression();
             app.UseCors();
 
             // 请求日志

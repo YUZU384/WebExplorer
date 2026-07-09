@@ -15,9 +15,9 @@ namespace WebExplorer.Services
         }
 
         /// <summary>
-        /// 获取文件流用于下载
+        /// 获取文件信息用于下载（使用 PhysicalFile 零拷贝传输）
         /// </summary>
-        public async Task<(FileStream? Stream, string? ContentType, string? FileName, long FileSize, string? Error)> GetFileStreamAsync(string filePath)
+        public async Task<(string? FilePath, string? ContentType, string? FileName, long FileSize, string? Error)> GetFileInfoAsync(string filePath)
         {
             try
             {
@@ -36,17 +36,16 @@ namespace WebExplorer.Services
                 }
 
                 var fileInfo = new FileInfo(safePath);
-                var stream = new FileStream(safePath, FileMode.Open, FileAccess.Read, FileShare.Read, 4096, FileOptions.Asynchronous | FileOptions.SequentialScan);
                 var contentType = MimeTypes.GetMimeType(safePath);
                 var fileName = fileInfo.Name;
 
                 _logger.Info($"开始下载: {safePath} ({UploadService.FormatFileSize(fileInfo.Length)})");
 
-                return (stream, contentType, fileName, fileInfo.Length, null);
+                return (safePath, contentType, fileName, fileInfo.Length, null);
             }
             catch (Exception ex)
             {
-                _logger.Error($"获取下载流失败: {ex.Message}");
+                _logger.Error($"获取下载文件信息失败: {ex.Message}");
                 return (null, null, null, 0, $"下载失败: {ex.Message}");
             }
         }

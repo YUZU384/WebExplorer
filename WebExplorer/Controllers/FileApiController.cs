@@ -73,19 +73,21 @@ namespace WebExplorer.Controllers
 
             var safePath = DecodePath(path);
 
-            var (stream, contentType, fileName, fileSize, error) = await _downloadService.GetFileStreamAsync(safePath);
+            var (filePath, contentType, fileName, fileSize, error) = await _downloadService.GetFileInfoAsync(safePath);
 
-            if (error != null || stream == null)
+            if (error != null || filePath == null)
                 return BadRequest(ApiResponse<object>.Fail(error ?? "下载失败"));
 
             // RFC 5987: filename* 用于非 ASCII 文件名，filename 作为 ASCII 回退
-            var encodedName = Uri.EscapeDataString(fileName);
+            var encodedName = Uri.EscapeDataString(fileName ?? "download");
             var asciiFallback = string.IsNullOrEmpty(fileName) ? "download" :
                 new string(fileName.Where(c => c < 128 && !"'\"\\;".Contains(c)).ToArray());
             if (string.IsNullOrWhiteSpace(asciiFallback)) asciiFallback = "download";
             Response.Headers.ContentDisposition =
                 $"attachment; filename=\"{asciiFallback}\"; filename*=UTF-8''{encodedName}";
-            return File(stream, contentType ?? "application/octet-stream", enableRangeProcessing: true);
+
+            // 使用 PhysicalFile 实现零拷贝传输，性能更优
+            return PhysicalFile(filePath, contentType ?? "application/octet-stream", enableRangeProcessing: true);
         }
 
         /// <summary>

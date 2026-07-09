@@ -404,9 +404,8 @@
 
         elements.uploadPanel.style.display = 'block';
 
-        for (const file of files) {
-            await uploadSingleFile(file);
-        }
+        const uploadPromises = files.map(file => uploadSingleFile(file));
+        await Promise.allSettled(uploadPromises);
     }
 
     async function uploadSingleFile(file) {
